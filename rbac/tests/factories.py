@@ -8,7 +8,7 @@ class ActionFactory(factory.DjangoModelFactory):
         model = models.Action
 
     name = factory.Faker('word')
-    codename = factory.LazyFunction(lambda x: "{0}.{0}.{0}".format(x.name))
+    codename = factory.LazyAttribute(lambda x: "{0}.{0}.{0}".format(x.name))
 
 
 class ActionToRoleFactory(factory.DjangoModelFactory):
