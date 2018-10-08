@@ -25,9 +25,13 @@ class ActionToGroup(Timestamped):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     action = models.ForeignKey(Action, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return "{0}[{1}]".format(str(self.action), str(self.group))
+
     class Meta:
         verbose_name = 'Uprawnienie do grupy'
         verbose_name_plural = 'Uprawnienia do grup'
+        unique_together = ('group', 'action')
 
 
 class ActionToRole(Timestamped):
@@ -37,6 +41,9 @@ class ActionToRole(Timestamped):
     """
     role = models.ForeignKey('rbac.Role', on_delete=models.CASCADE)
     action = models.ForeignKey(Action, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{0}[{1}]".format(str(self.action), str(self.role))
 
     class Meta:
         verbose_name = 'Uprawnienie do roli'

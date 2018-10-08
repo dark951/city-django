@@ -3,7 +3,7 @@ from django.db import IntegrityError, DataError
 from django.test import TestCase
 
 from rbac import models
-from rbac.tests.factories import RoleFactory, ActionFactory
+from rbac.tests.factories import RoleFactory, ActionFactory, ActionToRoleFactory, ActionToGroupFactory
 
 
 class ActionTestCase(TestCase):
@@ -28,11 +28,63 @@ class ActionTestCase(TestCase):
 
     def test_codename_to_long(self):
         with self.assertRaises(DataError):
-            ActionFactory(codename=factory.Faker('text', max_nb_chars=110))
+            ActionFactory(codename=factory.Faker('text', max_nb_chars=200))
 
     def test_unique(self):
         with self.assertRaises(IntegrityError):
             ActionFactory(name=self.action.name, codename=self.action.codename)
+
+
+class ActionToRoleTestCase(TestCase):
+    def setUp(self):
+        self.action_to_role = ActionToRoleFactory()
+
+    def test_creation(self):
+        self.action_to_role.should.be.an(models.ActionToRole)
+
+    def test_uniques(self):
+        with self.assertRaises(IntegrityError):
+            ActionToRoleFactory(role=self.action_to_role.role, action=self.action_to_role.action)
+
+    def test_action_requiration(self):
+        with self.assertRaises(IntegrityError):
+            ActionToRoleFactory(action=None)
+
+    def test_role_requiration(self):
+        with self.assertRaises(IntegrityError):
+            ActionToRoleFactory(role=None)
+
+    def test_representation(self):
+        str(self.action_to_role).should.be.equal(
+            "{0}[{1}]".format(str(self.action_to_role.action), str(self.action_to_role.role)))
+
+
+class ActionToGroupTestCase(TestCase):
+    def setUp(self):
+        self.action_to_group = ActionToGroupFactory()
+
+    def test_creation(self):
+        self.action_to_group.should.be.an(models.ActionToGroup)
+
+    def test_uniques(self):
+        with self.assertRaises(IntegrityError):
+            ActionToGroupFactory(group=self.action_to_group.group, action=self.action_to_group.action)
+
+    def test_action_requiration(self):
+        with self.assertRaises(IntegrityError):
+            ActionToGroupFactory(action=None)
+
+    def test_groupy_requiration(self):
+        with self.assertRaises(IntegrityError):
+            ActionToGroupFactory(group=None)
+
+    def test_representation(self):
+        str(self.action_to_group).should.be.eql(
+            "{0}[{1}]".format(str(self.action_to_group.action), str(self.action_to_group.group)))
+
+
+class GroupToRoleTestCase(TestCase):
+    pass
 
 
 class RoleModelTestCase(TestCase):
@@ -59,6 +111,10 @@ class RoleModelTestCase(TestCase):
     def test_name_too_long(self):
         with self.assertRaises(DataError):
             RoleFactory(name=factory.Faker('text', max_nb_chars=128))
+
+    def test_name_requiration(self):
+        with self.assertRaises(IntegrityError):
+            RoleFactory(name=None)
 
     def test_active_not_null(self):
         with self.assertRaises(IntegrityError):

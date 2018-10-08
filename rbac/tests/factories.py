@@ -11,12 +11,20 @@ class ActionFactory(factory.DjangoModelFactory):
     codename = factory.LazyAttribute(lambda x: "{0}.{0}.{0}".format(x.name))
 
 
+class ActionToGroupFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ActionToGroup
+
+    action = factory.SubFactory('rbac.tests.factories.ActionFactory')
+    group = factory.SubFactory('common.factories.GroupFactory')
+
+
 class ActionToRoleFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ActionToRole
 
-    role_id = factory.SubFactory('rbac.tests.factories.RoleFactory')
-    action_id = factory.SubFactory('rbac.tests.factories.ActionFactory')
+    role = factory.SubFactory('rbac.tests.factories.RoleFactory')
+    action = factory.SubFactory('rbac.tests.factories.ActionFactory')
 
 
 class RoleFactory(factory.DjangoModelFactory):
