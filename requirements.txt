@@ -8,3 +8,4 @@ django-extensions>=2.1.3
 werkzeug>=0.14.1
 sure>=1.4.11
 django-nose>=1.4.6
+pyyaml>=3.13

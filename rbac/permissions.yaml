@@ -1,0 +1,7 @@
+permissions:
+  - name: test
+    permission: test.test.test
+  - name: test group
+    permissions:
+      - name: group:permission:1
+        permission: test.group.permission1
