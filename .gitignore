@@ -3,3 +3,5 @@ _venv/**
 static/**
 __pychache__/
 *.pyc
+.coverage
+htmlcov/

@@ -27,9 +27,25 @@ class ActionToRoleFactory(factory.DjangoModelFactory):
     action = factory.SubFactory('rbac.tests.factories.ActionFactory')
 
 
+class GroupToRoleFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.GroupToRole
+
+    role = factory.SubFactory('rbac.tests.factories.RoleFactory')
+    group = factory.SubFactory('common.factories.GroupFactory')
+
+
 class RoleFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.Role
 
     name = factory.Faker('word')
     active = True
+
+
+class RoleToUserFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.RoleToUser
+
+    user = factory.SubFactory('common.factories.UserFactory')
+    role = factory.SubFactory('rbac.tests.factories.RoleFactory')

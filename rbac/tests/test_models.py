@@ -3,7 +3,8 @@ from django.db import IntegrityError, DataError
 from django.test import TestCase
 
 from rbac import models
-from rbac.tests.factories import RoleFactory, ActionFactory, ActionToRoleFactory, ActionToGroupFactory
+from rbac.tests.factories import RoleFactory, ActionFactory, ActionToRoleFactory, ActionToGroupFactory, \
+    GroupToRoleFactory, RoleToUserFactory
 
 
 class ActionTestCase(TestCase):
@@ -84,7 +85,27 @@ class ActionToGroupTestCase(TestCase):
 
 
 class GroupToRoleTestCase(TestCase):
-    pass
+    def setUp(self):
+        self.group_to_role = GroupToRoleFactory()
+
+    def test_creation(self):
+        self.group_to_role.should.be.an(models.GroupToRole)
+
+    def test_uniques(self):
+        with self.assertRaises(IntegrityError):
+            GroupToRoleFactory(group=self.group_to_role.group, role=self.group_to_role.role)
+
+    def test_role_requiration(self):
+        with self.assertRaises(IntegrityError):
+            GroupToRoleFactory(role=None)
+
+    def test_groupy_requiration(self):
+        with self.assertRaises(IntegrityError):
+            GroupToRoleFactory(group=None)
+
+    def test_representation(self):
+        str(self.group_to_role).should.be.eql(
+            "{0}[{1}]".format(str(self.group_to_role.group), str(self.group_to_role.role)))
 
 
 class RoleModelTestCase(TestCase):
@@ -122,3 +143,27 @@ class RoleModelTestCase(TestCase):
 
     def test_active_is_boolean(self):
         self.role.active.should.be.an(bool)
+
+
+class RoleToUserTestCase(TestCase):
+    def setUp(self):
+        self.role_to_user = RoleToUserFactory()
+
+    def test_creation(self):
+        self.role_to_user.should.be.an(models.RoleToUser)
+
+    def test_uniques(self):
+        with self.assertRaises(IntegrityError):
+            RoleToUserFactory(user=self.role_to_user.user, role=self.role_to_user.role)
+
+    def test_role_requiration(self):
+        with self.assertRaises(IntegrityError):
+            RoleToUserFactory(role=None)
+
+    def test_groupy_requiration(self):
+        with self.assertRaises(IntegrityError):
+            RoleToUserFactory(user=None)
+
+    def test_representation(self):
+        str(self.role_to_user).should.be.eql(
+            "{0}[{1}]".format(str(self.role_to_user.role), str(self.role_to_user.user)))

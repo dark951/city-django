@@ -59,6 +59,9 @@ class GroupToRole(Timestamped):
     role = models.ForeignKey('rbac.Role', on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return "{0}[{1}]".format(str(self.group), str(self.role))
+
     class Meta:
         verbose_name = 'Grupa do roli'
         verbose_name_plural = 'Grupy do ról'
@@ -81,11 +84,14 @@ class Role(Timestamped):
         verbose_name_plural = 'Role'
 
 
-class UserToRole(Timestamped):
+class RoleToUser(Timestamped):
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
+    def __str__(self):
+        return "{0}[{1}]".format(str(self.role), str(self.user))
+
     class Meta:
-        verbose_name = 'Użytkownik do roli'
-        verbose_name_plural = 'Użytkownicy do ról'
+        verbose_name = 'Rola do użytkownika'
+        verbose_name_plural = 'Role do Użytkowników'
         unique_together = ['role', 'user']
