@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.db import models
+from django.db import models, connection
 
 from common.models import Timestamped
 
@@ -95,3 +95,21 @@ class RoleToUser(Timestamped):
         verbose_name = 'Rola do użytkownika'
         verbose_name_plural = 'Role do Użytkowników'
         unique_together = ['role', 'user']
+
+
+class PermissionUpload(models.Model):
+    """
+    Model for uploading data to data base. Run privilege management command after insert data.
+    All data should be removed just after management command finish.
+    """
+    codename = models.CharField('Akcja', max_length=100)
+    group = models.CharField('Grupa', max_length=80)
+    name = models.CharField('Nazwa', max_length=64)
+
+    class Meta:
+        managed = False
+
+    @classmethod
+    def structure_restore(cls):
+        with connection.cursor() as cursor:
+            cursor.execute('select rbaC_restore_structure()')
