@@ -5,3 +5,5 @@ permissions:
     permissions:
       - name: group:permission:1
         permission: test.group.permission1
+      - name: group:permission:2
+        permission: test.group.permission1

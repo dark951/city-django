@@ -10,7 +10,7 @@ class Action(Timestamped):
     Model represents action for rbac.
     """
     name = models.CharField('Nazwa', max_length=64)
-    codename = models.CharField('Akcja', max_length=100)
+    codename = models.CharField('Akcja', max_length=100, unique=True)
 
     def __str__(self):
         return "{0}({1})".format(self.name, self.codename)
@@ -18,7 +18,6 @@ class Action(Timestamped):
     class Meta:
         verbose_name = 'Akcja'
         verbose_name_plural = 'Akcje'
-        unique_together = ('name', 'codename')
 
 
 class ActionToGroup(Timestamped):
@@ -103,13 +102,20 @@ class PermissionUpload(models.Model):
     All data should be removed just after management command finish.
     """
     codename = models.CharField('Akcja', max_length=100)
-    group = models.CharField('Grupa', max_length=80)
+    group = models.CharField('Grupa', max_length=80, blank=True, null=True)
     name = models.CharField('Nazwa', max_length=64)
-
-    class Meta:
-        managed = False
 
     @classmethod
     def structure_restore(cls):
         with connection.cursor() as cursor:
-            cursor.execute('select rbaC_restore_structure()')
+            cursor.execute('select rbac_restore_structure()')
+
+    @classmethod
+    def clear(cls):
+        """
+        Method cleans the table, whose contains permissions data that was uploaded from permission files.
+        :return:
+        """
+        with connection.cursor() as cursor:
+            cursor.execute('truncate table {}'.format(cls._meta.db_table))
+
