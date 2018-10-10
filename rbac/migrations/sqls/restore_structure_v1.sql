@@ -34,5 +34,37 @@ begin
 			insert into updated_groups(id) values(group_id);
 		end if;
 	end loop;
+	-- remove unused items, permissions and groups rows
+	-- collecting data of a groups that should be deleted
+	drop table if exists groups_to_delete;
+	create temp table groups_to_delete(id integer);
+	insert into groups_to_delete(id)
+		select g.id	from (select ug.id from (select auth_group.id
+					from auth_group
+						left join updated_groups on updated_groups.id = auth_group.id
+					where updated_groups.id is null) ug
+				left join auth_group_permissions on auth_group_permissions.group_id = ug.id
+			where auth_group_permissions.group_id is null) g;
+	-- collecting data of a actions that should be deleted
+	drop table if exists actions_to_delete;
+	create temp table actions_to_delete(id integer);
+	insert into actions_to_delete(id)
+		select rbac_action.id
+			from rbac_action
+				left join updated_permissions on rbac_action.id = updated_permissions.id
+			where updated_permissions.id is null;
+	-- remove a connection data between action and group
+	delete from rbac_actiontogroup
+		where rbac_actiontogroup.action_id in (select id from actions_to_delete);
+	delete from rbac_actiontogroup
+		where rbac_actiontogroup.group_id in (select id from groups_to_delete);
+	-- remove group data
+	delete from auth_group
+		where auth_group.id in (select id from groups_to_delete);
+	-- remove actions data
+	delete from rbac_action
+	where rbac_action.id in (select id from actions_to_delete);
+	-- cleans all unnessesary stuctures
+	drop table if exists updated_permissions, updated_groups, groups_to_delete, actions_to_delete;
 end;
 $$;
