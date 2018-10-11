@@ -13,6 +13,14 @@ class PrivilegeParser(object):
         # simplify structure and next insert it in data base
         self._insert_data(list(self._simplify_structure(data, None)))
 
+    @staticmethod
+    def propagate():
+        """
+        The method that will call db to restore structure
+        :return:
+        """
+        PermissionUpload.structure_restore()
+
     def _simplify_structure(self, data, group):
         # simplify structure, build up on generator syntax with recursion
         for row in data:
@@ -24,4 +32,9 @@ class PrivilegeParser(object):
 
     @staticmethod
     def _insert_data(data):
+        """
+        Bulk insert permission data structure into db
+        :param data:
+        :return:
+        """
         PermissionUpload.objects.bulk_create([PermissionUpload(**row) for row in data])

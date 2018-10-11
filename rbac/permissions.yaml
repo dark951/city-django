@@ -1,6 +1,8 @@
 permissions:
   - name: test
     permission: test.test.test
+  - name: test 2
+    permission: test.test.test2
   - name: test group
     permissions:
       - name: group:permission:1

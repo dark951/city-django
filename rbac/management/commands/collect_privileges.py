@@ -15,6 +15,7 @@ class Command(BaseCommand):
         parser.clear()
         for data in self._get_permissions_object():
             parser.parse(data.get('permissions', []))
+        parser.propagate()
 
     @staticmethod
     def _get_permissions_object():
