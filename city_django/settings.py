@@ -104,3 +104,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-coverage', '--cover-package=rbac']
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKEND': 'django_filters.rest_framework.DjangoFilterBackend'
+}
