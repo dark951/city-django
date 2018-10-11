@@ -5,3 +5,4 @@ __pychache__/
 *.pyc
 .coverage
 htmlcov/
+.DS_store
