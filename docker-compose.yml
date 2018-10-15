@@ -14,3 +14,9 @@ services:
     - config.env
     volumes:
     - city_postgres:/var/lib/postgresql/data
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    env_file:
+      - config.env

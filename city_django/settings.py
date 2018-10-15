@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'rest_framework_swagger',
+    'django_filters',
     'city.apps.CityConfig',
     'rbac'
 ]
@@ -106,5 +107,5 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-coverage', '--cover-package=rbac']
 
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKEND': 'django_filters.rest_framework.DjangoFilterBackend'
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
